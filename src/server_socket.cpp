@@ -5,15 +5,34 @@
 // LISCENSE: MIT
 //
 #include "server_socket.hpp"
+#include <iostream>
+#include <stdexcept>
 
-shh::ServerSocket::ServerSocket(int domain,int port,int type, int protocol,u_long interface)
+shh::ServerSocket::ServerSocket(int domain,int port,int type, int protocol,u_long interface, int backlog)
 : Socket(domain,type,protocol,port,interface)
 {
 set_connection(establish_connection(get_sock(),get_address()));
-test_connection(get_connection());
 }
 
 int shh::ServerSocket::establish_connection(int sock, struct sockaddr_in* address)
 {
-    return bind(sock, (struct sockaddr*)address, sizeof(*address));
+    if (bind(sock, (struct sockaddr*)address, sizeof(*address))< 0){
+        throw std::runtime_error("Binding Failed...");
+    }
+    //TODO: FIX THIS SHITTY CODE
+    if (listen(sock, 10) < 0){
+        throw std::runtime_error("Listening failed...");
+    }
+    std::cout << "sucess"<< '\n';
+    return 0;
+}
+
+int shh::ServerSocket::close_connection(int sock){
+    return close(sock);
+}
+
+//setter
+int shh::ServerSocket::set_backlog(){
+    int backlog = 10;
+    return backlog;
 }
