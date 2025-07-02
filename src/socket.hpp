@@ -11,9 +11,6 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/types.h>
-#include <iostream>
-#include <cstdlib>
-#include <cstdio>
 
 namespace shh
 {
@@ -28,9 +25,10 @@ public:
     // this is virtual in order to be able to be inherited from both the client and server
     virtual int establish_connection(int sock, struct sockaddr_in address) = 0;
     void test_connection(int);
-    struct sockaddr_in get_address();
+    struct sockaddr_in* get_address();
     int get_sock();
     int get_connection();
+    void set_connection(int con);
 };
 }
 #endif  /*socket.hpp*/

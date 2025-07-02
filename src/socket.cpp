@@ -5,7 +5,8 @@
 // LISCENSE: MIT
 //
 #include "socket.hpp"
-#include <netinet/in.h>
+#include <cstdlib>
+#include <stdexcept>
 
 shh::Socket::Socket(int domain, int type, int protocol, int port, u_long interface)
 {
@@ -14,23 +15,19 @@ shh::Socket::Socket(int domain, int type, int protocol, int port, u_long interfa
     address.sin_addr.s_addr = htonl(interface);
     sock = socket(domain, type, protocol);
     test_connection(sock);
-    connection = establish_connection(sock, address);
-    test_connection(connection);
+
 };
-
-
 
 void shh::Socket::test_connection(int item){
     //check man socket
-    if (item < 0)
-    {
-        perror("Connection failed");
+    if (item < 0){
+        throw std::runtime_error("connection failed");
         exit(EXIT_FAILURE);
     }
 };
 
-struct sockaddr_in shh::Socket::get_address(){
-    return address;
+struct sockaddr_in* shh::Socket::get_address(){
+    return &address;
 };
 
 int shh::Socket::get_sock(){
@@ -40,3 +37,7 @@ int shh::Socket::get_sock(){
 int shh::Socket::get_connection(){
     return connection;
 };
+
+void shh::Socket::set_connection(int con){
+    connection = con;
+}
