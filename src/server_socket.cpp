@@ -8,14 +8,14 @@
 #include <iostream>
 #include <stdexcept>
 
-shh::ServerSocket::ServerSocket(int domain,int port,int type, int protocol,u_long interface, int backlog)
+shh::ServerSocket::ServerSocket(int domain,int type, int protocol,int port, u_long interface)
 : Socket(domain,type,protocol,port,interface)
 {
 set_connection(establish_connection(get_sock(),get_address()));
 }
 
 int shh::ServerSocket::establish_connection(int sock, struct sockaddr_in* address)
-{
+{                                             //binding error here for sure
     if (bind(sock, (struct sockaddr*)address, sizeof(*address))< 0){
         throw std::runtime_error("Binding Failed...");
     }
