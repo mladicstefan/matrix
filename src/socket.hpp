@@ -27,6 +27,7 @@ public:
     int get_sock();
     int get_connection();
     void set_connection(int con);
+    int get_addrsize();
 };
 }
 #endif  /*socket.hpp*/
