@@ -11,6 +11,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/types.h>
+#include <unistd.h>
+
 namespace shh
 {
 class Socket
@@ -28,6 +30,7 @@ public:
     int get_connection();
     void set_connection(int con);
     int get_addrsize();
+    virtual ~Socket();
 };
 }
 #endif  /*socket.hpp*/
