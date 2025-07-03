@@ -1,4 +1,3 @@
-
 //
 // shh - C++ WebServer
 // author: mladicstefan
@@ -8,19 +7,21 @@
 #include "server_socket.hpp"
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <sys/epoll.h>
 
 namespace shh{
 class Server{
 private:
     shh::ServerSocket socket;
+    int client_fd = 0;
+    int epoll_fd;
+    // std::lock_guard<std::mutex> mut;
 public:
-    Server(int port) : socket(AF_INET, SOCK_STREAM, 0, port, INADDR_ANY){}
-
-    void start(){
-        // set up epoll
-        socket.establish_connection(socket.get_sock(), socket.get_address());
-        //add server to epoll
-        // main loop
-    }
+    Server(int port, int clientfd, int epoll_fd);
+    void start();
+    void accept_connection();
+    void epoll_events();
 };
 }
