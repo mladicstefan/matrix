@@ -22,5 +22,12 @@ public:
     Worker(int client_fd, int worker_id);
     void add_client(int client_fd);
     void stop();
+    void run();
+    void process_http_request();
+    void cleanup_idle_connections();
+    void handle_error(int client_fd);
+    void handle_client_disconnect(int client_fd);
+    void handle_client_send(int client_fd);
+    void handle_client_read(int client_fd);
 };
 }

@@ -9,7 +9,6 @@
 #include <cerrno>
 #include <exception>
 #include <iostream>
-#include <memory>
 #include <mutex>
 
 shh::Acceptor::Acceptor(
