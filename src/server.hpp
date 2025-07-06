@@ -19,9 +19,8 @@ private:
     int epoll_fd;
     // std::lock_guard<std::mutex> mut;
 public:
-    Server(int port, int clientfd, int epoll_fd);
+    Server(int port, int clientfd);
     void start();
     void accept_connection();
-    void epoll_events();
 };
 }

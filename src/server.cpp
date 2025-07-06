@@ -8,8 +8,9 @@
 #include "server.hpp"
 #include "server_socket.hpp"
 #include <stdexcept>
+#include "threads/acceptor.hpp"
 
-shh::Server::Server(int port, int client_fd, int epoll_fd)
+shh::Server::Server(int port, int client_fd)
 : socket(AF_INET, SOCK_STREAM, 0, port, INADDR_ANY), client_fd(client_fd) {
     epoll_fd = epoll_create1(EPOLL_CLOEXEC);
 }
@@ -19,21 +20,10 @@ void shh::Server::start(){
     if (con < 0){
         throw std::runtime_error("conection establish failed");
     }
+    shh::Acceptor acceptor();
+    acceptor.run(socket);
 }
 
 void shh::Server::accept_connection(){
-    struct sockaddr_in client_addr;
-    socklen_t addr_len = sizeof(client_addr);
-    //check if this actually gets client or just proxy.
-    client_fd = accept(socket.get_sock(),
-        reinterpret_cast<struct sockaddr*>(&client_addr),
-        &addr_len);
-
-    if (client_fd < 0){
-        throw std::runtime_error("failed to accept client");
-    }
-}
-
-void shh::Server::epoll_events(){
 
 }

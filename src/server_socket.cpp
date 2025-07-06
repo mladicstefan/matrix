@@ -16,9 +16,12 @@ shh::ServerSocket::ServerSocket(int domain,int type, int protocol,int port, u_lo
 
 int shh::ServerSocket::establish_connection(int sock, struct sockaddr_in* address)
 {
-    if (bind(sock, (struct sockaddr*)address, get_addrsize())< 0){
+    if (bind(sock,
+        reinterpret_cast<struct sockaddr*>(&address),
+        get_addrsize())< 0){
         throw std::runtime_error("Binding Failed...");
     }
+
     //TODO: FIX THIS SHITTY CODE
     if (listen(sock, 10) < 0){
         throw std::runtime_error("Listening failed...");
