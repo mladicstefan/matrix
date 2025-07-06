@@ -6,12 +6,13 @@
 //
 
 #include "worker.hpp"
+#include <memory>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <thread>
 #include <vector>
 #include "../server_socket.hpp"
+#include <mutex>
 
 namespace shh
 
@@ -19,16 +20,17 @@ namespace shh
 class Acceptor{
 private:
 int listen_fd;
-std::vector<Worker>& workers;
-std::thread thread_obj;
+std::vector<std::unique_ptr<Worker>> workers;
+std::mutex workers_mutex;
 struct sockaddr_in client_addr;
 bool stop_flag;
 
 public:
-    Acceptor();
-    // Acceptor(int listen_fd, std::vector<Worker>& worker_pool, struct sockaddr_in client_addr);
+    Acceptor(int listen_fd, struct sockaddr_in client_addr);
     void run(shh::Socket& socket);
-    void start();
-    void stop();
+    void add_worker(int client_fd, int worker_id);
+    void remove_worker();
+    ~Acceptor();
+
 };
 }

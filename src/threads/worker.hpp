@@ -21,5 +21,6 @@ private:
 public:
     Worker(int client_fd, int worker_id);
     void add_client(int client_fd);
+    void stop();
 };
 }

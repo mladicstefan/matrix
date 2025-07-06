@@ -15,12 +15,9 @@ namespace shh{
 class Server{
 private:
     shh::ServerSocket socket;
-    int client_fd = 0;
     int epoll_fd;
-    // std::lock_guard<std::mutex> mut;
 public:
-    Server(int port, int clientfd);
+    Server(int port);
     void start();
-    void accept_connection();
 };
 }

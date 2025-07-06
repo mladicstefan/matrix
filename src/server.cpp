@@ -10,8 +10,9 @@
 #include <stdexcept>
 #include "threads/acceptor.hpp"
 
-shh::Server::Server(int port, int client_fd)
-: socket(AF_INET, SOCK_STREAM, 0, port, INADDR_ANY), client_fd(client_fd) {
+shh::Server::Server(int port)
+: socket(AF_INET, SOCK_STREAM, 0, port, INADDR_ANY){
+    //main epoll for reactor
     epoll_fd = epoll_create1(EPOLL_CLOEXEC);
 }
 
@@ -20,10 +21,10 @@ void shh::Server::start(){
     if (con < 0){
         throw std::runtime_error("conection establish failed");
     }
-    shh::Acceptor acceptor();
+    shh::Acceptor acceptor(socket.get_sock(), *socket.get_address());
+
+    //test
+    acceptor.add_worker(-1, 0);
+    acceptor.add_worker(-1, 1);
     acceptor.run(socket);
-}
-
-void shh::Server::accept_connection(){
-
 }
