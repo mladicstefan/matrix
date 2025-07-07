@@ -47,28 +47,29 @@ void shh::Worker::run(){
 
         if (num_events == 0){
             //this needs to be implemented
-            cleanup_idle_connections();
+            // cleanup_idle_connections();
         }
 
         for(int i = 0; i < num_events; i++){
             struct epoll_event& event = events[i];
             int client_fd = event.data.fd;
+            epoll_data_t client_data = event.data;
 
             if (event.events & EPOLLERR){
                 //this needs to be implemented
-                handle_error(client_fd);
+                // handle_error(client_fd);
             }
             else if (event.events & EPOLLHUP){
                 //this needs to be implemented
-                handle_client_disconnect(client_fd);
+                // handle_client_disconnect(client_fd);
             }
             else if (event.events & EPOLLIN){
                 //this needs to be implemented
-                handle_client_read(client_fd);
+                handle_client_read(client_fd, client_data);
             }
             else if (event.events & EPOLLOUT){
                 //this needs to be implemented
-                handle_client_send(client_fd);
+                // handle_client_send(client_fd);
             }
         }
     }

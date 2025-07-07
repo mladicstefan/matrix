@@ -9,4 +9,7 @@
 
 int main(){
     shh::Server server(4431);
+    while (true){
+        continue;
+    }
 }
