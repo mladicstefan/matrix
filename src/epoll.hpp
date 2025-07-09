@@ -6,6 +6,7 @@
 //
 
 #pragma once
+#include <vector>
 #ifndef epoll_hpp
 #define epoll_hpp
 
@@ -17,12 +18,13 @@ class Epoll{
 public:
     // using SP_Data = std::shared_ptr<Data>;
 private:
-    static const int MAXFDS = 100;
-    static epoll_event *events;
-    static int epoll_fd;
+    const int MAXFDS = 100;
+    std::vector<epoll_event> events;
+    int epoll_fd;
 public:
-    static int init();
+    Epoll();
 
+    ~Epoll();
 };
 
 }
