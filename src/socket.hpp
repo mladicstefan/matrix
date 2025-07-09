@@ -4,33 +4,35 @@
 // repo: https://github.com/mladicstefan/shhh
 // LISCENSE: MIT
 //
+
+#pragma once
+#include <sys/types.h>
 #ifndef socket_hpp
 #define socket_hpp
 
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
-#include <sys/types.h>
-#include <unistd.h>
 
-namespace shh
-{
-class Socket
-{
-private:
-    int connection;
-    int sock;
-    struct sockaddr_in address;
+namespace shh{
+
+class Socket {
 public:
-    Socket(int domain, int type, int protocol, int port, u_long interface);
-    // this is virtual in order to be able to be inherited from both the client and server
-    virtual int establish_connection(int sock, struct sockaddr_in* address) = 0;
-    struct sockaddr_in* get_address();
+    explicit Socket(int domain, int type, int protocol, u_short port ,in_addr_t interface, u_int backlog);
+    struct sockaddr_in* get_addr();
+    int get_addrsize();
     int get_sock();
     int get_connection();
     void set_connection(int con);
-    int get_addrsize();
-    virtual ~Socket();
+    void set_backlog(uint new_backlog);
+    void bind_listen();
+    ~Socket();
+
+private:
+    int sock;
+    int connection;
+    struct sockaddr_in address;
+    int backlog = SOMAXCONN;
 };
+
 }
-#endif  /*socket.hpp*/
+#endif /*socket.hpp*/
