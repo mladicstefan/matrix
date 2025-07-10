@@ -19,10 +19,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-
 const int MAXFDS = 100;
-
-//TODO: ADD ERRNO DESCRIPTIONS
 
 shh::Epoll::Epoll(int maxEvents): epoll_fd(epoll_create1(EPOLL_CLOEXEC)), events(maxEvents){
     assert(epoll_fd > 0 && events.size() > 0);
