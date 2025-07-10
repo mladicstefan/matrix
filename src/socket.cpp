@@ -14,7 +14,7 @@
 #include <unistd.h>
 
 shh::Socket::Socket(int domain, int type, int protocol, u_short port, in_addr_t interface, uint backlog)
-: sock(-1), connection(-1), backlog(backlog)
+: sock(-1), connection(-1), backlog(backlog), address{}
     {
     //set socket domain (IPV4, IPV6 ...)
     address.sin_family = domain;
