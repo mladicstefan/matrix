@@ -19,16 +19,18 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-const int EVENTSUM = 4096;
+
 const int MAXFDS = 100;
 
 //TODO: ADD ERRNO DESCRIPTIONS
 
-shh::Epoll::Epoll(): epoll_fd(epoll_create1(EPOLL_CLOEXEC)), events(EVENTSUM){
-    assert(epoll_fd > 0);
+shh::Epoll::Epoll(int maxEvents): epoll_fd(epoll_create1(EPOLL_CLOEXEC)), events(maxEvents){
+    assert(epoll_fd > 0 && events.size() > 0);
 }
 
-shh::Epoll::~Epoll(){}
+shh::Epoll::~Epoll(){
+    close(epoll_fd);
+}
 
 void shh::Epoll::add(int client_fd, uint32_t events){
     struct epoll_event event;
@@ -74,15 +76,11 @@ void shh::Epoll::del(int client_fd, uint32_t events){
     }
 }
 
-void shh::Epoll::wait(int listen_fd, int MAXEVENTS, int timeout){
-    //need to see about event var
-    // int event_count = epoll_wait(epoll_fd, event, MAXEVENTS, timeout);
-    // if (event_count < 0){
-    //     throw std::runtime_error("wait() failed for: " + std::string(std::strerror(errno)));
-    // }
+int shh::Epoll::wait(int listen_fd, int MAXEVENTS, int timeoutMs){
+    return epoll_wait(epoll_fd, &events[0], static_cast<int>(events.size()), timeoutMs);
 }
 
-void e_accept(int listen_fd, int epoll_fd){
+void shh::Epoll::e_accept(int listen_fd, int epoll_fd){
     struct sockaddr_in client_addr {};
     socklen_t client_addr_len = sizeof(client_addr);
     int client_fd = 0;
@@ -99,9 +97,9 @@ void e_accept(int listen_fd, int epoll_fd){
         }
        //here make the req object which you pass further down epoll pipeline
     }
-    // if (client_fd < 0){
-    //     throw std::runtime_error("e_accept threw: " + std::string(std::strerror(errno)));
-    // } add error handling for EAGAIN & EWOULDBLOCK, perhaps in caller
+    if (client_fd < 0 && errno != EAGAIN && errno != EWOULDBLOCK){
+        throw std::runtime_error("accept4, error: " +std::string(std::strerror(errno)));
+    }
 }
 
 void shh::Epoll::e_handler(int listen_fd, int events_num){

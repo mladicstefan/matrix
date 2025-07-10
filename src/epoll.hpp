@@ -6,11 +6,11 @@
 //
 
 #pragma once
-#include <cstdint>
-#include <vector>
 #ifndef epoll_hpp
 #define epoll_hpp
 
+#include <vector>
+#include <cstdint>
 #include <sys/epoll.h>
 
 namespace shh {
@@ -20,15 +20,15 @@ public:
     // using SP_Data = std::shared_ptr<Data>;
 private:
     const int MAXFDS = 100;
-    std::vector<epoll_event> events;
+    std::vector<struct epoll_event> events;
     epoll_event* event;
     int epoll_fd;
 public:
-    Epoll();
+    Epoll(int maxEvents);
     void add(int client_fd, uint32_t events);
     void mod(int client_fd, uint32_t events);
     void del(int client_fd, uint32_t events);
-    void wait(int listen_fd, int MAXEVENTS, int timeout);
+    int wait(int listen_fd, int MAXEVENTS, int timeoutMs);
     void e_accept(int listen_fd, int epoll_fd);
     //void for now gonna implement return type after i finish req
     void e_handler(int listen_fd, int events_num);
