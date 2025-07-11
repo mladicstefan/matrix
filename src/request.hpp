@@ -6,6 +6,7 @@
 //
 
 #pragma once
+#include "buffer.hpp"
 #include <vector>
 #ifndef request_h
 #define request_h
@@ -17,9 +18,9 @@ namespace shh{
 
 class HttpRequest{
 private:
-    std::string parse_requestline();
-    std::string parse_headers();
-    std::string parse_body();
+    bool parse_requestline(std::string& line);
+    bool parse_headers(std::string& line);
+    bool parse_body(std::string& line);
     void parse_path(std::vector<std::string> files);
 
 public:
@@ -32,7 +33,7 @@ public:
     HttpRequest();
     ~HttpRequest() = default;
 
-    bool parse(); //this needs to take in buffer later
+    bool parse(shh::Buffer &Buffer); //this needs to take in buffer later
 private:
     std::string method_, path_, version_, body_;
     std::unordered_map<std::string, std::string> headers_;
