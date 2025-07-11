@@ -5,6 +5,11 @@
 // LISCENSE: MIT
 //
 
+#pragma once
+#include <vector>
+#ifndef request_h
+#define request_h
+
 #include<string>
 #include <unordered_map>
 
@@ -13,12 +18,10 @@ namespace shh{
 class HttpRequest{
 private:
     std::string parse_requestline();
-    std::string parse_header();
+    std::string parse_headers();
     std::string parse_body();
-    std::string parse_path;
+    void parse_path(std::vector<std::string> files);
 
-    std::string method_, path_, version_, body_;
-    std::unordered_map<std::string, std::string> header_;
 public:
     enum PARSE_STATE{
         REQUEST_LINE,
@@ -26,9 +29,15 @@ public:
         BODY,
         FINISH,
     };
-
     HttpRequest();
     ~HttpRequest() = default;
 
+    bool parse(); //this needs to take in buffer later
+private:
+    std::string method_, path_, version_, body_;
+    std::unordered_map<std::string, std::string> headers_;
+    PARSE_STATE state_;
 };
 }
+
+#endif /*request_h*/
