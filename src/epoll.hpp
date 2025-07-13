@@ -20,7 +20,6 @@ public:
     // using SP_Data = std::shared_ptr<Data>;
 private:
     const int MAXFDS = 100;
-    std::vector<struct epoll_event> events;
     epoll_event* event;
     int epoll_fd;
 public:
@@ -32,6 +31,7 @@ public:
     void e_accept(int listen_fd, int epoll_fd);
     //void for now gonna implement return type after i finish req
     void e_handler(int listen_fd, int events_num);
+    std::vector<struct epoll_event> events;
     ~Epoll();
 };
 

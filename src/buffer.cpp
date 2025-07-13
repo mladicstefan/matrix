@@ -100,3 +100,7 @@ const char* shh::Buffer::FindCRLF_CRLF() const {
 
     return found == BeginWrite() ? nullptr : found;
 }
+
+void shh::Buffer::BufferAppend(const std::string& str) {
+    BufferAppend(str.data(), str.length());
+}

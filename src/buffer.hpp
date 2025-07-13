@@ -12,7 +12,7 @@
 
 #include<cstddef>
 #include<vector>
-
+#include <string>
 namespace shh {
 
 class Buffer{
@@ -35,6 +35,7 @@ public:
     const char* Peek() const;
 
     void BufferAppend(const char* str, size_t len);
+    void BufferAppend(const std::string& str);
     void Retrieve(size_t len);
     void RetrieveUntil(const char* end);
     void RetrieveAll();
