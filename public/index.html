@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+    <head>
+        <title>My Web Server</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 40px;
+            }
+            h1 {
+                color: #333;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Welcome to My Web Server!</h1>
+        <p>This is served from index.html</p>
+        <p>Server time: <span id="time"></span></p>
+        <script>
+            document.getElementById("time").textContent =
+                new Date().toLocaleString();
+        </script>
+    </body>
+</html>
