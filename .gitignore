@@ -8,6 +8,7 @@
 *.o
 *.obj
 test
+server
 # Precompiled Headers
 *.gch
 *.pch
