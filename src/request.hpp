@@ -21,8 +21,10 @@ class HttpRequest{
 private:
     bool parse_requestline(std::string& line);
     bool parse_headers(std::string& line);
-    bool parse_body(std::string& line);
 
+    bool parse_body_content(shh::Buffer& buffer);
+    void setup_body_parsing();
+    bool should_have_body() const;
 public:
     enum PARSE_STATE{
         REQUEST_LINE,
@@ -45,11 +47,15 @@ public:
 
     std::string getHeader(const std::string& name) const;
     void reset();
-    bool parse(shh::Buffer &Buffer); //this needs to take in buffer later
+    bool parse(shh::Buffer &Buffer);
+    bool isKeepAlive() const;
+    bool shouldHaveBody() const;
 private:
     std::string method_, path_, version_, body_;
     std::unordered_map<std::string, std::string> headers_;
     PARSE_STATE state_;
+    int contentLength_;
+    int bodyBytesRead_;
 };
 }
 
