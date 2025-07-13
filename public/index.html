@@ -1,24 +1,43 @@
 <!doctype html>
-<html>
+<html lang="en">
     <head>
-        <title>My Web Server</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                margin: 40px;
-            }
-            h1 {
-                color: #333;
-            }
-        </style>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Counter & Zod Demo</title>
+        <link rel="stylesheet" href="style.css" />
+        <!-- Zod from jsDelivr CDN -->
+        <script src="https://cdn.jsdelivr.net/npm/zod@3.23.8/lib/index.umd.min.js"></script>
     </head>
     <body>
-        <h1>Welcome to My Web Server!</h1>
-        <p>This is served from index.html</p>
-        <p>Server time: <span id="time"></span></p>
-        <script>
-            document.getElementById("time").textContent =
-                new Date().toLocaleString();
-        </script>
+        <h1>Counter & Form Validation Demo</h1>
+
+        <!-- Counter -->
+        <section id="counter">
+            <button id="countBtn">Count</button>
+            <span id="countDisplay">0</span>
+        </section>
+
+        <!-- Simple form -->
+        <section id="contact">
+            <h2>Contact form (validated with Zod)</h2>
+            <form id="contactForm" novalidate>
+                <label>
+                    Name:
+                    <input type="text" name="name" required />
+                </label>
+                <label>
+                    Email:
+                    <input type="email" name="email" required />
+                </label>
+                <label>
+                    Message:
+                    <textarea name="msg" rows="4" required></textarea>
+                </label>
+                <button type="submit">Send</button>
+                <p id="formStatus"></p>
+            </form>
+        </section>
+
+        <script src="script.js"></script>
     </body>
 </html>

@@ -21,6 +21,7 @@ const std::unordered_map<std::string, std::string> shh::HttpResponse::MIME_TYPE 
     { ".mpeg",  "video/mpeg" },
     { ".mpg",   "video/mpeg" },
     { ".css",   "text/css "},
+    { ".ico",   "image/x-icon"},
     { ".js",    "text/javascript "},
 };
 
@@ -129,9 +130,10 @@ void shh::HttpResponse::AddContent_(shh::Buffer& buffer){
     }
     // safer static cast
     // int* intmmRet = static_cast<int*>(mmRet);
-    char* charmmRet = static_cast<char*>(mmRet);
+    char* mmFile_ = static_cast<char*>(mmRet);
     close(srcFd);
     buffer.BufferAppend("Content-length: " + std::to_string(mmFileStat_.st_size) + "\r\n\r\n");
+    buffer.BufferAppend(mmFile_, mmFileStat_.st_size);
 }
 
 void shh::HttpResponse::ProcessErrorCode_(){

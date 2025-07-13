@@ -1,0 +1,50 @@
+body {
+    font-family: system-ui, sans-serif;
+    margin: 2rem auto;
+    max-width: 600px;
+    line-height: 1.5;
+}
+
+h1 {
+    text-align: center;
+}
+
+#counter {
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+button {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 6px;
+    background: #007bff;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.8rem;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.2rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#formStatus {
+    margin-top: 1rem;
+    font-weight: bold;
+}
