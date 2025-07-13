@@ -10,7 +10,9 @@
 #include <cstring>
 #include <algorithm>
 
-shh::Buffer::Buffer(int defaultBufSize) : buffer_(defaultBufSize), readPos_(0), writePos_(0) {}
+shh::Buffer::Buffer(int defaultBufSize) : buffer_(defaultBufSize), readPos_(0), writePos_(0) {
+    assert(defaultBufSize > 0);
+}
 
 size_t shh::Buffer::ReadableBytes() const{
     return writePos_ - readPos_;
