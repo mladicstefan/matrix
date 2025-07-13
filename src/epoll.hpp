@@ -24,7 +24,7 @@ private:
     epoll_event* event;
     int epoll_fd;
 public:
-    Epoll(int maxEvents);
+    explicit Epoll(int maxEvents);
     void add(int client_fd, uint32_t events);
     void mod(int client_fd, uint32_t events);
     void del(int client_fd, uint32_t events);
