@@ -1,50 +1,342 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: system-ui, sans-serif;
-    margin: 2rem auto;
-    max-width: 600px;
-    line-height: 1.5;
+    font-family: "Montserrat", sans-serif;
+    line-height: 1.6;
+    color: #e0e0e0;
+    background-color: #0a0a0a;
+    min-height: 100vh;
 }
 
-h1 {
+/* Contact bar - round buttons that blend in */
+.contact-info {
+    background: #0a0a0a;
+    padding: 15px 20px;
     text-align: center;
+    position: relative;
 }
 
-#counter {
-    margin-bottom: 2rem;
-    display: flex;
-    gap: 1rem;
+.contact-info a {
+    display: inline-flex;
     align-items: center;
+    gap: 6px;
+    margin: 0 8px;
+    color: #666;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.8rem;
+    position: relative;
+    overflow: hidden;
 }
 
-button {
-    padding: 0.6rem 1rem;
-    border: none;
-    border-radius: 6px;
-    background: #007bff;
+.contact-info a::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    transform: scale(0);
+    transition: transform 0.3s ease;
+}
+
+.contact-info a:hover {
+    color: #fff;
+    transform: scale(1.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.contact-info a:hover::before {
+    transform: scale(1);
+}
+
+.contact-info a span {
+    position: relative;
+    z-index: 1;
+}
+
+.contact-info svg {
+    width: 14px;
+    height: 14px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Main content */
+main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 40px;
+}
+
+/* Intro section - clean and minimal */
+.intro {
+    margin-bottom: 60px;
+}
+
+.intro h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: #ccc;
+    margin-bottom: 15px;
+    font-weight: 400;
+}
+
+.server-note {
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+    margin-bottom: 0;
+}
+
+/* Content sections */
+.content {
+    margin-bottom: 50px;
+}
+
+.content h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.content p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    color: #e0e0e0;
+}
+
+.highlight {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 30px 0;
+}
+
+em {
+    color: #ccc;
+    font-style: italic;
+}
+
+strong {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Contact form - cleaner styling */
+.contact-section {
+    max-width: 600px;
+    margin: 60px 0;
+}
+
+.contact-section h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #fff;
+    font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    background: #1a1a1a;
     color: #fff;
     font-size: 1rem;
-    cursor: pointer;
+    font-family: "Montserrat", sans-serif;
+    transition: border-color 0.2s ease;
 }
 
-button:hover {
-    opacity: 0.9;
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #666;
 }
 
-label {
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.error-message {
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    margin-top: 4px;
+    display: none;
+}
+
+.error-message.show {
     display: block;
-    margin-bottom: 0.8rem;
 }
 
-input,
-textarea {
-    width: 100%;
-    padding: 0.5rem;
-    margin-top: 0.2rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.form-group.error input,
+.form-group.error textarea {
+    border-color: #ff6b6b;
 }
 
-#formStatus {
-    margin-top: 1rem;
-    font-weight: bold;
+.submit-btn {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: "Montserrat", sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.submit-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    transform: scale(0);
+    transition: transform 0.3s ease;
+}
+
+.submit-btn:hover {
+    transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.submit-btn:hover::before {
+    transform: scale(1);
+}
+
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 1px solid #333;
+}
+
+footer p {
+    font-style: italic;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    main {
+        padding: 40px 20px;
+    }
+
+    .intro h1 {
+        font-size: 2.2rem;
+    }
+
+    .subtitle {
+        font-size: 1.1rem;
+    }
+
+    .content h3 {
+        font-size: 1.3rem;
+    }
+
+    .content p {
+        font-size: 1rem;
+    }
+
+    .contact-info a {
+        margin: 4px 6px;
+        padding: 6px 12px;
+        font-size: 0.75rem;
+    }
+
+    .contact-info svg {
+        width: 12px;
+        height: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .intro h1 {
+        font-size: 1.8rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .content h3 {
+        font-size: 1.2rem;
+    }
+
+    .content p {
+        font-size: 0.95rem;
+    }
+
+    .contact-info {
+        padding: 10px;
+    }
+
+    .contact-info a {
+        display: flex;
+        justify-content: center;
+        margin: 6px auto;
+        width: 120px;
+        padding: 8px 16px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 10px;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 10px;
+    }
 }

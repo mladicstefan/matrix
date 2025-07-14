@@ -1,0 +1,48 @@
+/* errors.css - shared dark mode styles for error pages */
+body {
+    font-family: "Montserrat", sans-serif;
+    background-color: #0a0a0a;
+    color: #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 6rem;
+    color: #ff4f4f;
+}
+
+h2 {
+    font-size: 2rem;
+    color: #ffa94d;
+    margin: 10px 0;
+}
+
+p {
+    font-size: 1.1rem;
+    color: #ccc;
+    max-width: 500px;
+}
+
+a {
+    margin-top: 30px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #61dafb;
+    text-decoration: none;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transform: scale(1.05);
+}
