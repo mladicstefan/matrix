@@ -1,9 +1,10 @@
 //
 // shh - C++ WebServer Test
-// Simple test main.cpp for the webserver
+// main execution script
 //
 
-#include "server.hpp"
+#include "include/server.hpp"
+
 #include <iostream>
 #include <netinet/in.h>
 #include <sys/socket.h>

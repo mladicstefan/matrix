@@ -5,12 +5,13 @@
 // LISCENSE: MIT
 //
 
-#include "socket.hpp"
+#include "include/net_utils.hpp"
+#include "include/socket.hpp"
+
 #include <cstring>
 #include <netinet/in.h>
 #include <stdexcept>
 #include <sys/types.h>
-#include "net_utils.hpp"
 #include <unistd.h>
 
 shh::Socket::Socket(int domain, int type, int protocol, u_short port, in_addr_t interface, uint backlog)

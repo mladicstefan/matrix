@@ -5,16 +5,16 @@
 // LISCENSE: MIT
 //
 
+#include "include/server.hpp"
+#include "include/epoll.hpp"
 
+#include <unistd.h>
+#include <iostream>
 #include <exception>
 #include <netinet/in.h>
 #include <sys/epoll.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#include "server.hpp"
-#include "epoll.hpp"
-#include <iostream>
-#include <unistd.h>
 
 const int MAX_EVENTS = SOMAXCONN;
 const int TIMEOUT_MS = 400;

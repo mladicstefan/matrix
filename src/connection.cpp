@@ -5,8 +5,9 @@
 // LISCENSE: MIT
 //
 
-#include "connection.hpp"
-#include "request.hpp"
+#include "include/connection.hpp"
+#include "include/request.hpp"
+
 #include <assert.h>
 #include <sys/socket.h>
 #include <sys/types.h>
