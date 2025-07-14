@@ -22,6 +22,8 @@ const std::unordered_map<std::string, std::string> shh::HttpResponse::MIME_TYPE 
     { ".mpeg",  "video/mpeg" },
     { ".mpg",   "video/mpeg" },
     { ".css",   "text/css "},
+    { ".mp3",   "audio/mpeg" },
+    { ".wav",   "audio/wav" },
     { ".ico",   "image/x-icon"},
     { ".js",    "text/javascript "},
 };

@@ -42,7 +42,7 @@ void shh::Epoll::add(int client_fd, uint32_t events){
     struct epoll_event event;
     event.data.fd = client_fd;
     event.events = events;
-    //add req logic here
+
     if (epoll_ctl(epoll_fd ,EPOLL_CTL_ADD, client_fd, &event) < 0){
         if (errno == ENOENT){
             std::cerr << "Warning: epoll add failed, fd not found: " << client_fd << "\n";
@@ -57,7 +57,7 @@ void shh::Epoll::mod(int client_fd, uint32_t events){
     struct epoll_event event;
     event.data.fd = client_fd;
     event.events = events;
-    //add req logic here
+
     if (epoll_ctl(epoll_fd ,EPOLL_CTL_MOD, client_fd, &event) < 0){
             if (errno == ENOENT){
                 std::cerr << "Warning: epoll mod failed, fd not found: " << client_fd << "\n";
@@ -72,7 +72,7 @@ void shh::Epoll::del(int client_fd, uint32_t events){
     struct epoll_event event;
     event.data.fd = client_fd;
     event.events = events;
-    //add req logic here
+
     if (epoll_ctl(epoll_fd ,EPOLL_CTL_DEL, client_fd, nullptr) < 0){
         if (errno == ENOENT){
             std::cerr << "Warning: epoll del failed, fd not found: " << client_fd << "\n";
@@ -145,6 +145,7 @@ void shh::Epoll::e_handler(int listen_fd, int MAXEVENTS, int TIMEOUT_MS){
                 if (request_path.empty() || request_path == "/") {
                         request_path = "/index.html";
                     }
+                std::cout << "Serving: " << request_path << " on fd " << fd << std::endl;
                 conn->handle_write(srcDir_,request_path);
 
                 if(conn->isFinished()){
