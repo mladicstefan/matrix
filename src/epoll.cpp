@@ -6,9 +6,11 @@
 //
 
 #include "epoll.hpp"
+#include "connection.hpp"
 #include <cerrno>
 #include <cstdint>
 #include <cstring>
+#include <memory>
 #include <netinet/in.h>
 #include <stdexcept>
 #include <string>
@@ -19,9 +21,15 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-const int MAXFDS = 100;
+const int MAXFDS = SOMAXCONN;
 
-shh::Epoll::Epoll(int maxEvents): epoll_fd(epoll_create1(EPOLL_CLOEXEC)), events(maxEvents){
+shh::Epoll::Epoll(int maxEvents, connMap& connections, const std::string& srcDir, std::string path):
+    epoll_fd(epoll_create1(EPOLL_CLOEXEC)),
+    events(maxEvents),
+    activeConnections_(connections),
+    srcDir_(srcDir),
+    path_(path)
+{
     assert(epoll_fd > 0 && events.size() > 0);
 }
 
@@ -92,14 +100,17 @@ void shh::Epoll::e_accept(int listen_fd, int epoll_fd){
             close(client_fd);
             continue;
         }
-       //here make the req object which you pass further down epoll pipeline
+        activeConnections_[client_fd] = std::make_unique<Connection>(client_fd);
+
+        add(client_fd, EPOLLIN | EPOLLET);
     }
     if (client_fd < 0 && errno != EAGAIN && errno != EWOULDBLOCK){
         throw std::runtime_error("accept4, error: " +std::string(std::strerror(errno)));
     }
 }
 
-void shh::Epoll::e_handler(int listen_fd, int events_num){
+void shh::Epoll::e_handler(int listen_fd, int MAXEVENTS, int TIMEOUT_MS){
+    int events_num = wait(listen_fd, MAXFDS, TIMEOUT_MS);
 
     //bitmask for err
     uint32_t err = EPOLLERR | EPOLLHUP;
@@ -112,16 +123,36 @@ void shh::Epoll::e_handler(int listen_fd, int events_num){
             //for initial e_wait
             e_accept(listen_fd, epoll_fd);
         } else {
+            auto conn_it = activeConnections_.find(fd);
+            if (conn_it == activeConnections_.end()) continue;
+            auto& conn = conn_it -> second;
+
             if (ev & err){
                 std::cerr << "epoll error on fd " << fd << '\n';
-                //add timer logic after
+                activeConnections_.erase(conn_it);
+                close(fd);
+                continue;
             }
-            //will need to convert fd to req obj here later...
             if (ev & EPOLLIN){
-                // GET POST UEST PROCESSING
+                conn-> handle_read();
+                if (conn->isReadyToWrite()){
+                    mod(fd, EPOLLOUT | EPOLLET);
+                }
             }
             else if (ev & EPOLLOUT){
-                // SERVING THE CLIENT
+                std::string request_path = conn->getRequestPath();
+                if (request_path.empty() || request_path == "/") {
+                        request_path = "/index.html";
+                    }
+                conn->handle_write(srcDir_,request_path);
+
+                if(conn->isFinished()){
+                    activeConnections_.erase(conn_it);
+                    close(fd);
+                }
+                else{
+                    mod(fd, EPOLLIN | EPOLLET);
+                }
             }
             else if (ev & EPOLLPRI) {
                 std::cerr << "EPOLLPRI received on fd " << fd << ", ignoring.\n";

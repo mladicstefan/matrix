@@ -77,4 +77,22 @@ void shh::Connection::handle_write(std::string web_root, std::string path){
    } else {
        std::cout << "Response sent (" << bytes_sent << " bytes)\n";
    }
+   if (keep_alive_) {
+              state_ = READING;
+
+              readBuff_.RetrieveAll();
+              writeBuff_.RetrieveAll();
+
+              request_.reset();
+          } else {
+              state_ = FINISH;
+          }
+}
+
+bool shh::Connection::isReadyToWrite() const {
+    return state_ == WRITING;
+}
+
+std::string shh::Connection::getRequestPath() const {
+    return request_.getPath();
 }

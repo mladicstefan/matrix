@@ -39,6 +39,8 @@ public:
     void handle_read();
     void handle_write(std::string web_root, std::string path);
     bool isFinished() const;
+    bool isReadyToWrite() const;
+    std::string getRequestPath() const;
     int getFd() const;
     ~Connection() = default;
 };
