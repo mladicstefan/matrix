@@ -18,6 +18,12 @@ make
 
 Stay tuned!
 
+## PERFORMANCE
+As of now the server is still not multi-threaded but it can still handle 1000 req/s
+Stress test results:
+![stress](assets/stresstest.gif)
+
+
 Quick little diagram to not leave you hanging:
 
 ![VPS setup diagram](assets/diagram.png)
