@@ -29,6 +29,8 @@ size_t shh::Buffer::PrependableBytes() const{
 }
 
 void shh::Buffer::EnsureWritable(size_t len){
+
+    std::lock_guard<std::mutex> lock(mutex_);
     std::cout << "EnsureWritable called with len=" << len
                   << ", writable=" << WritableBytes()
                   << ", prependable=" << PrependableBytes()
@@ -56,6 +58,7 @@ void shh::Buffer::HasWritten(size_t len){
 }
 
 void shh::Buffer::BufferAppend(const char* str, size_t len) {
+    std::lock_guard<std::mutex> lock(mutex_);
     assert(str);
     EnsureWritable(len);
     // std::copy(str, str + len, BeginWrite()); unsafe line, caused seg fault
