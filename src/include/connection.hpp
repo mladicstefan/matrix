@@ -37,7 +37,7 @@ private:
 public:
     explicit Connection(int client_fd);
     void handle_read();
-    void handle_write(std::string web_root, std::string path);
+    void handle_write(const std::string web_root, const std::string path);
     bool isFinished() const;
     bool isReadyToWrite() const;
     std::string getRequestPath() const;

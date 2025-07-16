@@ -63,7 +63,7 @@ void shh::Connection::handle_read(){
     }
 }
 
-void shh::Connection::handle_write(std::string web_root, std::string path){
+void shh::Connection::handle_write(const std::string web_root, const std::string path){
    bool keep_alive_ = request_.getHeader("connection") == "keep-alive";
 
    response_.init(web_root, path, keep_alive_, DEFAULT_RESPONSE_CODE);
@@ -95,5 +95,9 @@ bool shh::Connection::isReadyToWrite() const {
 }
 
 std::string shh::Connection::getRequestPath() const {
-    return request_.getPath();
+    const std::string& p = request_.getPath();
+    if (p.empty()) {
+        std::cerr << "[Warning] Request path is empty!\n";
+    }
+    return p;
 }

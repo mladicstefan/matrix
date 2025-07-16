@@ -1,4 +1,3 @@
-//
 // shh - C++ WebServer
 // author: mladicstefan
 // repo: https://github.com/mladicstefan/shhh
@@ -47,7 +46,7 @@ shh::HttpResponse::HttpResponse(){
     isKeepAlive_ = false;
 }
 
-void shh::HttpResponse::init(const std::string& srcDir,std::string& path,bool isKeepAlive ,int code){
+void shh::HttpResponse::init(const std::string& srcDir,const std::string& path,bool isKeepAlive ,int code){
     assert(srcDir != "");
     if(mmFile_) { unmapFile(); }
     code_ = code;
@@ -133,7 +132,7 @@ void shh::HttpResponse::AddContent_(shh::Buffer& buffer){
     }
     // safer static cast
     // int* intmmRet = static_cast<int*>(mmRet);
-    char* mmFile_ = static_cast<char*>(mmRet);
+    mmFile_ = static_cast<char*>(mmRet);
     close(srcFd);
     buffer.BufferAppend("Content-length: " + std::to_string(mmFileStat_.st_size) + "\r\n\r\n");
     buffer.BufferAppend(mmFile_, mmFileStat_.st_size);

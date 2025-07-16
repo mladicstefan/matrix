@@ -41,7 +41,7 @@ private:
     HttpResponse();
     ~HttpResponse() = default;
 
-    void init(const std::string& pubDir, std::string& path, bool isKeepAlive, int code);
+    void init(const std::string& srcDir, const std::string& path, bool isKeepAlive, int code);
     void reset();
 
     void MakeResponse(shh::Buffer& buffer);

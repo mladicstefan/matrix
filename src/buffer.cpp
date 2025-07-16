@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <cstring>
 #include <algorithm>
+#include <iostream>
 
 shh::Buffer::Buffer(int defaultBufSize) : buffer_(defaultBufSize), readPos_(0), writePos_(0) {
     assert(defaultBufSize > 0);
@@ -28,6 +29,12 @@ size_t shh::Buffer::PrependableBytes() const{
 }
 
 void shh::Buffer::EnsureWritable(size_t len){
+    std::cout << "EnsureWritable called with len=" << len
+                  << ", writable=" << WritableBytes()
+                  << ", prependable=" << PrependableBytes()
+                  << ", buffer size=" << buffer_.size()
+                  << ", writePos_=" << writePos_
+                  << ", readPos_=" << readPos_ << std::endl;
     if (WritableBytes() < len){
         if (PrependableBytes() + WritableBytes() >= len){
             //move readable data to front
@@ -44,13 +51,15 @@ void shh::Buffer::EnsureWritable(size_t len){
 }
 
 void shh::Buffer::HasWritten(size_t len){
+    assert(len <= WritableBytes());
     writePos_ += len;
 }
 
 void shh::Buffer::BufferAppend(const char* str, size_t len) {
     assert(str);
     EnsureWritable(len);
-    std::copy(str, str + len, BeginWrite());
+    // std::copy(str, str + len, BeginWrite()); unsafe line, caused seg fault
+    std::memmove(BeginWrite(), str, len); //replacement
     HasWritten(len);
 }
 
