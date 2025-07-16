@@ -9,6 +9,7 @@
 #include "include/request.hpp"
 
 #include <assert.h>
+#include <atomic>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <iostream>
@@ -21,6 +22,7 @@ int shh::Connection::getFd() const{
 bool shh::Connection::isFinished() const{
     return state_ == FINISH;
 }
+
 
 shh::Connection::Connection(int client_fd):
     fd_(client_fd),
@@ -100,4 +102,22 @@ std::string shh::Connection::getRequestPath() const {
         std::cerr << "[Warning] Request path is empty!\n";
     }
     return p;
+}
+
+
+bool shh::Connection::try_lock() noexcept{
+    return !busy_.exchange(true, std::memory_order_acquire);
+}
+
+void shh::Connection::unlock() noexcept{
+    busy_.store(false, std::memory_order_release);
+}
+
+bool shh::Connection::try_close() noexcept{
+    bool expected = false;
+    return closed_.compare_exchange_strong(expected, true);
+}
+
+bool shh::Connection::is_closed() const{
+   return closed_;
 }

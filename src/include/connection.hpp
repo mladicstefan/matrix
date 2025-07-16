@@ -6,6 +6,7 @@
 //
 
 #pragma once
+#include <atomic>
 #ifndef connection_h
 #define connection_h
 
@@ -33,6 +34,8 @@ private:
     static const int DEFAULT_BUFF_SIZE = 4096;
     const int DEFAULT_RESPONSE_CODE = -1;
     bool keep_alive_;
+    std::atomic<bool> busy_{false};
+    std::atomic<bool> closed_{false};
 
 public:
     explicit Connection(int client_fd);
@@ -42,7 +45,10 @@ public:
     bool isReadyToWrite() const;
     std::string getRequestPath() const;
     int getFd() const;
-    ~Connection() = default;
+    bool try_lock() noexcept;
+    void unlock() noexcept;
+    bool try_close() noexcept;
+    bool is_closed() const;
 };
 
 }

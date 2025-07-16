@@ -7,6 +7,7 @@
 //
 
 #pragma once
+#include <mutex>
 #ifndef buffer_h
 #define buffer_h
 
@@ -20,6 +21,9 @@ private:
     std::vector<char> buffer_;
     int writePos_;
     int readPos_;
+    // std::mutex mutex_;
+    std::recursive_mutex mutex_;
+    void EnsureWritable_(size_t len);
 public:
     explicit Buffer(int defaultBufSize);
 

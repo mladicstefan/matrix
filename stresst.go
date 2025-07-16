@@ -121,6 +121,16 @@ func main() {
 	fmt.Printf("Errors: %d\n", atomic.LoadInt64(&stats.errorCount))
 	fmt.Printf("Duration: %v\n", duration)
 	fmt.Printf("Average RPS: %.2f\n", float64(atomic.LoadInt64(&stats.totalRequests))/duration.Seconds())
+
+	total := atomic.LoadInt64(&stats.totalRequests)
+	success := atomic.LoadInt64(&stats.successCount)
+	if total > 0 {
+		successPercent := float64(success) / float64(total) * 100
+		fmt.Printf("Success Rate: %.2f%%\n", successPercent)
+	} else {
+		fmt.Printf("Success Rate: N/A (no requests made)\n")
+	}
+
 	if maxRPS > 0 {
 		fmt.Printf("Rate Limit: %d RPS\n", maxRPS)
 	}

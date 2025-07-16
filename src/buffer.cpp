@@ -11,6 +11,7 @@
 #include <cstring>
 #include <algorithm>
 #include <iostream>
+#include <mutex>
 
 shh::Buffer::Buffer(int defaultBufSize) : buffer_(defaultBufSize), readPos_(0), writePos_(0) {
     assert(defaultBufSize > 0);
@@ -28,9 +29,9 @@ size_t shh::Buffer::PrependableBytes() const{
     return readPos_;
 }
 
-void shh::Buffer::EnsureWritable(size_t len){
+//non-locking private
+void shh::Buffer::EnsureWritable_(size_t len){
 
-    std::lock_guard<std::mutex> lock(mutex_);
     std::cout << "EnsureWritable called with len=" << len
                   << ", writable=" << WritableBytes()
                   << ", prependable=" << PrependableBytes()
@@ -52,13 +53,38 @@ void shh::Buffer::EnsureWritable(size_t len){
     assert(WritableBytes() >= len);
 }
 
+//locking public
+void shh::Buffer::EnsureWritable(size_t len){
+
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    if (WritableBytes() < len){
+        if (PrependableBytes() + WritableBytes() >= len){
+            //move readable data to front
+            size_t readable = ReadableBytes();
+            std::memmove(buffer_.data(), buffer_.data() + readPos_, readable);
+            readPos_ = 0;
+            writePos_ = readable;
+        } else {
+            size_t new_size = std::max(buffer_.size() * 2, writePos_ + len);
+            buffer_.resize(new_size);
+        }
+    }
+    assert(WritableBytes() >= len);
+}
+
 void shh::Buffer::HasWritten(size_t len){
     assert(len <= WritableBytes());
     writePos_ += len;
 }
 
 void shh::Buffer::BufferAppend(const char* str, size_t len) {
-    std::lock_guard<std::mutex> lock(mutex_);
+    std::lock_guard<std::recursive_mutex> lock(mutex_);
+    std::cout << "EnsureWritable called with len=" << len
+              << ", writable=" << WritableBytes()
+              << ", prependable=" << PrependableBytes()
+              << ", buffer size=" << buffer_.size()
+              << ", writePos_=" << writePos_
+              << ", readPos=" << readPos_ << std::endl;
     assert(str);
     EnsureWritable(len);
     // std::copy(str, str + len, BeginWrite()); unsafe line, caused seg fault
