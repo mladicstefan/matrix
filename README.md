@@ -79,12 +79,18 @@ make
 ```
 
 ### ▶️ Running
+#### Without docker !!!(CHECK MAIN.CPP)!!!
 
 ```bash
 ./server <port> <source_directory>
 
 # Example:
 ./server 8080 ../public
+```
+
+#### With docker (recommended)
+```bash
+./deploy.sh
 ```
 
 ---
