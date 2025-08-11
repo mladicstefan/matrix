@@ -8,6 +8,7 @@
 #include <iostream>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <arpa/inet.h>
 
 int main(int argc, char** argv) {
 
@@ -20,8 +21,13 @@ int main(int argc, char** argv) {
         int port = std::stoi(argv[1]);
         std::string srcDir = argv[2];
 
+	// when running outside of container do this
+	//shh::Server server(AF_INET, SOCK_STREAM, 0,
+			   //port, inet_addr("127.0.0.1"), SOMAXCONN,srcDir);
+
         shh::Server server(AF_INET, SOCK_STREAM, 0,
-                          port, INADDR_ANY, SOMAXCONN,srcDir);
+                          port, INADDR_ANY , SOMAXCONN,srcDir);
+
         server.run();
     } catch (const std::exception& e) {
         std::cerr << "Server error: " << e.what() << std::endl;

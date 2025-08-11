@@ -10,6 +10,7 @@
 #include <string>
 #include <unordered_map>
 #include <sys/mman.h>
+#include <sys/stat.h>
 
 #ifndef response_hpp
 #define response_hpp

@@ -33,7 +33,7 @@ shh::Server::Server(int domain,
                     in_addr_t interface,
                     uint backlog,
                     std::string path):
-    srcDir_("../public"),
+    srcDir_("./public"),
     path_(),
     listen_sock_(domain, type, protocol, port, interface, backlog),
     listen_fd_(listen_sock_.get_sock()),
