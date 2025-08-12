@@ -74,9 +74,13 @@ void shh::Buffer::HasWritten(size_t len){
 void shh::Buffer::BufferAppend(const char* str, size_t len) {
     std::lock_guard<std::recursive_mutex> lock(mutex_);
     assert(str);
-    if (len == 0) return;
+    if (!str || len == 0) return;
     EnsureWritable(len);
     // std::copy(str, str + len, BeginWrite()); unsafe line, caused seg fault
+    if (WritableBytes() < len) {
+        std::cerr << "FATAL: Buffer overflow prevented!" << std::endl;
+        return;
+    }
     std::memmove(BeginWrite(), str, len); //replacement
     HasWritten(len);
 }

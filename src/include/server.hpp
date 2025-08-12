@@ -38,7 +38,7 @@ public:
                     in_addr_t interface,
                     uint backlog,
                     std::string path);
-    shh::Connection* get_connection(int fd);
+    std::shared_ptr<shh::Connection> get_connection(int fd);
     void add_connection(int fd);
     void remove_connection(int fd);
     void handle_accept();

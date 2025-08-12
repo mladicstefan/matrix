@@ -85,12 +85,13 @@ void shh::Server::run() {
     }
 }
 
-shh::Connection* shh::Server::get_connection(int fd){
-   std::shared_lock lock(conn_mutex_);
-   if (auto it = activeConnections_.find(fd); it != activeConnections_.end()){
-       return it->second.get();
-   }
-   return nullptr;
+std::shared_ptr<shh::Connection> shh::Server::get_connection(int fd) {
+    std::shared_lock lock(conn_mutex_);
+    auto it = activeConnections_.find(fd);
+    if (it != activeConnections_.end()) {
+        return it->second;  // Returns shared_ptr, keeps object alive
+    }
+    return nullptr;
 }
 
 // void shh::Server::remove_connection(int fd){
@@ -108,8 +109,8 @@ void shh::Server::remove_connection(int fd) {
     auto it = activeConnections_.find(fd);
     if (it == activeConnections_.end()) return;
 
-    Connection* conn = it->second.get();
-    if (!conn->try_close()) return; // Already removed or being removed
+    // Connection* conn = it->second.get();
+    // if (!conn->try_close()) return; // Already removed or being removed
 
     epoll_instance.del(fd);
     activeConnections_.erase(it);
@@ -157,7 +158,8 @@ void shh::Server::handle_accept(){
 }
 
 void shh::Server::handle_connection_event(int fd, uint32_t ev) {
-    Connection* conn = get_connection(fd);
+    // Get shared ownership - object stays alive during this function
+    auto conn = get_connection(fd);
     if (!conn) return;
 
     if (ev & (EPOLLERR | EPOLLHUP)) {
@@ -165,36 +167,31 @@ void shh::Server::handle_connection_event(int fd, uint32_t ev) {
         return;
     }
 
-    if (!conn->try_lock()) {
-        epoll_instance.mod(fd, EPOLLIN | EPOLLET | EPOLLONESHOT);
-        return;
-    }
-
-    try {
-        if (ev & EPOLLIN) {
-            conn->handle_read();
-            if (conn->isReadyToWrite()) {
-                epoll_instance.mod(fd, EPOLLOUT | EPOLLET | EPOLLONESHOT);
-            } else {
-                epoll_instance.mod(fd, EPOLLIN | EPOLLET | EPOLLONESHOT);
-            }
-        } else if (ev & EPOLLOUT) {
-            std::string path = conn->getRequestPath();
-            if (path.empty() || path == "/") {
-                    path ="/index.html";
-            }
-            // std::cout << "Serving path: " << path << " from root: " << srcDir_ << std::endl;
-            conn->handle_write(srcDir_, path);
-
-            if (conn->isFinished()) {
-                remove_connection(fd);
-            } else {
-                epoll_instance.mod(fd, EPOLLIN | EPOLLET | EPOLLONESHOT);
-            }
+    if (ev & EPOLLIN) {
+        if (!conn->handle_read()) {
+            remove_connection(fd);
+            return;
         }
-    } catch (...){
-        remove_connection(fd);
-    }
+        if (conn->isReadyToWrite()) {
+            epoll_instance.mod(fd, EPOLLOUT | EPOLLET | EPOLLONESHOT);
+        } else {
+            epoll_instance.mod(fd, EPOLLIN | EPOLLET | EPOLLONESHOT);
+        }
+    } else if (ev & EPOLLOUT) {
+        std::string path = conn->getRequestPath();
+        if (path.empty() || path == "/") {
+            path = "/index.html";
+        }
+        
+        if (!conn->handle_write(srcDir_, path)) {
+            remove_connection(fd);
+            return;
+        }
 
-    conn->unlock();
+        if (conn->isFinished()) {
+            remove_connection(fd);
+        } else {
+            epoll_instance.mod(fd, EPOLLIN | EPOLLET | EPOLLONESHOT);
+        }
+    }
 }

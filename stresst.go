@@ -46,9 +46,11 @@ func reqWorker(
 			}
 
 			client := &http.Client{
-				Timeout: 5 * time.Second,
+				Timeout: 2 * time.Second,
 				Transport: &http.Transport{
 					DisableKeepAlives: false,
+					MaxIdleConns: 100,
+					MaxIdleConnsPerHost: 100,
 				},
 			}
 

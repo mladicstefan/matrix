@@ -34,20 +34,20 @@ private:
     static const int DEFAULT_BUFF_SIZE = 4096;
     const int DEFAULT_RESPONSE_CODE = -1;
     bool keep_alive_;
-    std::atomic<bool> busy_{false};
-    std::atomic<bool> closed_{false};
+    // std::atomic<bool> busy_{false};
+    // std::atomic<bool> closed_{false};
 
 public:
     explicit Connection(int client_fd);
-    void handle_read();
-    void handle_write(const std::string web_root, const std::string path);
+    bool handle_read();
+    bool handle_write(const std::string web_root, const std::string path);
     bool isFinished() const;
     bool isReadyToWrite() const;
     std::string getRequestPath() const;
     int getFd() const;
-    bool try_lock() noexcept;
-    void unlock() noexcept;
-    bool try_close() noexcept;
+    // bool try_lock() noexcept;
+    // void unlock() noexcept;
+    // bool try_close() noexcept;
     bool is_closed() const;
 };
 

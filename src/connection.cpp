@@ -36,7 +36,7 @@ shh::Connection::Connection(int client_fd):
     assert(client_fd > 0);
 }
 
-void shh::Connection::handle_read(){
+bool shh::Connection::handle_read(){
     size_t writable = readBuff_.WritableBytes();
     if (writable > 0){
         ssize_t bytes_read = recv(fd_, readBuff_.BeginWrite(), writable, 0);
@@ -44,11 +44,11 @@ void shh::Connection::handle_read(){
            readBuff_.HasWritten(bytes_read);
            if (!request_.parse(readBuff_)) {
                std::cerr << "Failed to parse HTTP request\n";
-               return;
+               return false;
            }
            if (!request_.isComplete()) {
                std::cerr << "Incomplete HTTP request\n";
-               return;
+               return false;
            }
            state_ = WRITING;
         }
@@ -59,15 +59,16 @@ void shh::Connection::handle_read(){
         else {
             std::cerr << "Failed to read from client or client disconnected\n";
             state_ = FINISH;
-            return;
+            return false;
         }
 
     }
+    return true;
 }
 
-void shh::Connection::handle_write(const std::string web_root, const std::string path){
+bool shh::Connection::handle_write(const std::string web_root, const std::string path){
    bool keep_alive_ = request_.getHeader("connection") == "keep-alive";
-
+   // bool keep_alive_ = false;
    response_.init(web_root, path, keep_alive_, DEFAULT_RESPONSE_CODE);
    response_.MakeResponse(writeBuff_);
 
@@ -77,6 +78,7 @@ void shh::Connection::handle_write(const std::string web_root, const std::string
    ssize_t bytes_sent = send(fd_, response_data, response_size, 0);
    if (bytes_sent < 0) {
        std::cerr << "Failed to send response\n";
+       return false;
    } else {
        // std::cout << "Response sent (" << bytes_sent << " bytes)\n";
    }
@@ -90,6 +92,7 @@ void shh::Connection::handle_write(const std::string web_root, const std::string
           } else {
               state_ = FINISH;
           }
+   return true;
 }
 
 bool shh::Connection::isReadyToWrite() const {
@@ -105,19 +108,19 @@ std::string shh::Connection::getRequestPath() const {
 }
 
 
-bool shh::Connection::try_lock() noexcept{
-    return !busy_.exchange(true, std::memory_order_acquire);
-}
+// bool shh::Connection::try_lock() noexcept{
+//     return !busy_.exchange(true, std::memory_order_acquire);
+// }
+//
+// void shh::Connection::unlock() noexcept{
+//     busy_.store(false, std::memory_order_release);
+// }
+//
+// bool shh::Connection::try_close() noexcept{
+//     bool expected = false;
+//     return closed_.compare_exchange_strong(expected, true);
+// }
 
-void shh::Connection::unlock() noexcept{
-    busy_.store(false, std::memory_order_release);
-}
-
-bool shh::Connection::try_close() noexcept{
-    bool expected = false;
-    return closed_.compare_exchange_strong(expected, true);
-}
-
-bool shh::Connection::is_closed() const{
-   return closed_;
-}
+// bool shh::Connection::is_closed() const{
+//    return closed_;
+// }
