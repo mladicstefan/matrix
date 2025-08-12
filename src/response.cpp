@@ -123,10 +123,17 @@ void shh::HttpResponse::AddContent_(shh::Buffer& buffer){
         ErrorResp(buffer,"File not found...");
         return;
     }
+
+    if (mmFileStat_.st_size == 0) {
+        close(srcFd);
+        buffer.BufferAppend("Content-length: 0\r\n\r\n");
+        return;
+    }
     //safer to use void* instead of int* and then later convert to int*
     void* mmRet = mmap(nullptr, mmFileStat_.st_size, PROT_READ, MAP_PRIVATE, srcFd, 0);
     //safe check, must be to voidptr, if passed invalid FD it will crash otherwise
     if (mmRet == MAP_FAILED) {
+        close(srcFd);
         ErrorResp(buffer, "Error opening file!");
         return;
     }

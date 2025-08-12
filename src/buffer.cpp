@@ -32,12 +32,6 @@ size_t shh::Buffer::PrependableBytes() const{
 //non-locking private
 void shh::Buffer::EnsureWritable_(size_t len){
 
-    std::cout << "EnsureWritable called with len=" << len
-                  << ", writable=" << WritableBytes()
-                  << ", prependable=" << PrependableBytes()
-                  << ", buffer size=" << buffer_.size()
-                  << ", writePos_=" << writePos_
-                  << ", readPos_=" << readPos_ << std::endl;
     if (WritableBytes() < len){
         if (PrependableBytes() + WritableBytes() >= len){
             //move readable data to front
@@ -79,13 +73,8 @@ void shh::Buffer::HasWritten(size_t len){
 
 void shh::Buffer::BufferAppend(const char* str, size_t len) {
     std::lock_guard<std::recursive_mutex> lock(mutex_);
-    std::cout << "EnsureWritable called with len=" << len
-              << ", writable=" << WritableBytes()
-              << ", prependable=" << PrependableBytes()
-              << ", buffer size=" << buffer_.size()
-              << ", writePos_=" << writePos_
-              << ", readPos=" << readPos_ << std::endl;
     assert(str);
+    if (len == 0) return;
     EnsureWritable(len);
     // std::copy(str, str + len, BeginWrite()); unsafe line, caused seg fault
     std::memmove(BeginWrite(), str, len); //replacement

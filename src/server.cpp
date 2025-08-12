@@ -112,8 +112,8 @@ void shh::Server::remove_connection(int fd) {
     if (!conn->try_close()) return; // Already removed or being removed
 
     epoll_instance.del(fd);
-    ::close(fd);
     activeConnections_.erase(it);
+    ::close(fd);
 }
 
 void shh::Server::add_connection(int fd) {
@@ -129,8 +129,8 @@ void shh::Server::handle_accept(){
                                 reinterpret_cast<struct sockaddr*>(&client_addr),
                                 &client_addr_len,
                                 SOCK_NONBLOCK)) > 0) {
-        std::cout << inet_ntoa(client_addr.sin_addr) << '\n';
-        std::cout << ntohs(client_addr.sin_port) << '\n';
+        // std::cout << inet_ntoa(client_addr.sin_addr) << '\n';
+        // std::cout << ntohs(client_addr.sin_port) << '\n';
 
         if (client_fd > MAXFDS){
             close(client_fd);
@@ -183,7 +183,7 @@ void shh::Server::handle_connection_event(int fd, uint32_t ev) {
             if (path.empty() || path == "/") {
                     path ="/index.html";
             }
-            std::cout << "Serving path: " << path << " from root: " << srcDir_ << std::endl;
+            // std::cout << "Serving path: " << path << " from root: " << srcDir_ << std::endl;
             conn->handle_write(srcDir_, path);
 
             if (conn->isFinished()) {

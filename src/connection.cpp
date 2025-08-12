@@ -53,7 +53,7 @@ void shh::Connection::handle_read(){
            state_ = WRITING;
         }
         else if (bytes_read == 0){
-            std::cout << "Client Disconnected! \n";
+            // std::cout << "Client Disconnected! \n";
             state_ = FINISH;
         }
         else {
@@ -78,7 +78,7 @@ void shh::Connection::handle_write(const std::string web_root, const std::string
    if (bytes_sent < 0) {
        std::cerr << "Failed to send response\n";
    } else {
-       std::cout << "Response sent (" << bytes_sent << " bytes)\n";
+       // std::cout << "Response sent (" << bytes_sent << " bytes)\n";
    }
    if (keep_alive_) {
               state_ = READING;
