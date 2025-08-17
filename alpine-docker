@@ -1,20 +1,18 @@
-FROM ubuntu:22.04
+FROM alpine:3.18
 
 # Install build tools AND runtime dependencies
-RUN apt-get update && apt-get install -y \
+RUN apk --no-cache add \
     g++ \
     make \
-    libstdc++6-dev \
-    build-essential \
+    libstdc++ \
+    libgcc \
     curl \
-    tini && \
-    rm -rf /var/lib/apt/lists/*
+    dumb-init && \
+    rm -rf /var/cache/apk/*
 
-# Add user
-RUN groupadd appuser && \
-    useradd -g appuser -s /bin/bash -d /home/appuser -m appuser
+RUN addgroup appuser && \
+    adduser -G appuser -s /bin/sh -D appuser
 
-# Create app directory
 RUN mkdir -p /app && \
     chown -R appuser:appuser /app
 
@@ -29,15 +27,16 @@ USER appuser
 RUN cd src && make clean && make
 
 # Move binary to app root
-USER root
 RUN mv src/server ./server
 
-# Set permissions
 RUN chmod 755 /app && \
     find /app -type f -exec chmod 644 {} \; && \
     chmod +x ./server
 
 EXPOSE 8080
 
-ENTRYPOINT ["tini", "--"]
-CMD ["./server"]
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8080/ || exit 1
+
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["./server", "8080", "./public"]
