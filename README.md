@@ -9,9 +9,20 @@
 </p>
 
 
-This is a learning project that evolved into a fully functional, non-blocking, event-driven web server capable of handling thousands of concurrent connections.
+## NOTE! This is a learning project and should not be used in production!
 
+## What I Built (Learning Project - Not Production Ready!)
+
+* **Event-driven architecture** – Exploring the reactor pattern to see how servers can handle lots of connections efficiently
+* **Non-blocking I/O with epoll** – Learning Linux's event notification system and why it scales better than traditional blocking approaches  
+* **Basic thread pool** – Experimenting with worker threads to understand the balance between parallelism and resource overhead
+* **HTTP/1.1 implementation** – Getting hands-on with connection reuse and proper protocol handling
+* **Custom buffer management** – Understanding memory patterns in network programming and avoiding unnecessary allocations
+* **Edge-triggered epoll** – Diving into the performance differences between level-triggered and edge-triggered event handling
+
+This was built to understand low-level networking concepts and concurrent I/O patterns. Definitely has rough edges and missing production concerns like TLS and rate limiting which is currently handled by NGINX acting as a reverse proxy.
 ---
+
 
 ## Performance
 Metrics:
@@ -21,64 +32,22 @@ Stress test using Go:
 go get golang.org/x/time/rate
 go run stresst.go
 ````
-
 ---
 
-## Key Features
-
-* **Reactor Pattern Architecture** – Event-driven design for maximum efficiency
-* **Non-blocking I/O** – Using Linux's `epoll` for scalable event notification
-* **Custom Minimal Thread Pool** – Optimal resource utilization with worker threads
-* **HTTP/1.1 Support** – With keep-alive and proper connection handling
-* **Custom Buffer System** – For efficient memory management
-* **Edge-Triggered Epoll** – For maximum performance
-
----
-
-## 📦 Project Structure
-
-```
-shhh/
-├── include/              # Header files
-│   ├── buffer.hpp
-│   ├── connection.hpp
-│   ├── epoll.hpp
-│   ├── net_utils.hpp
-│   ├── request.hpp
-│   ├── response.hpp
-│   ├── server.hpp
-│   └── socket.hpp
-├── src/                  # Implementation files
-│   ├── buffer.cpp        
-│   ├── connection.cpp    
-│   ├── epoll.cpp         
-│   ├── main.cpp          
-│   ├── request.cpp       
-│   ├── response.cpp      
-│   ├── server.cpp        
-│   └── socket.cpp        
-└── public/               # Static web content
-```
-
----
-
-## 🧰 Getting Started
-
-### ✅ Prerequisites
+### Prerequisites
 
 * Linux (uses `epoll`)
 * C++17 compiler (`g++` or `clang++`)
 * `make`
-* Optional: `CMake`
-
-### 🔧 Building
+* 
+### Building
 
 ```bash
 cd src/
 make
 ```
 
-### ▶️ Running
+### Running
 #### Without docker !!!(CHECK MAIN.CPP)!!!
 
 ```bash
@@ -92,49 +61,16 @@ make
 ```bash
 ./deploy.sh
 ```
-
 ---
 
-## 🏗️ Architecture Deep Dive
+## Docker Security Features
 
-### 🌀 The Reactor Pattern
-
-The server follows the **Reactor pattern** with the following components:
-
-* **Event Demultiplexer**: `epoll` for monitoring file descriptors
-* **Dispatcher**: Main thread that handles `epoll` events
-* **Request Handlers**: Worker threads that process I/O operations
-
-### ⚙️ Performance Optimizations
-
-* **Edge-triggered epoll**: Only notified on state changes
-* **`accept4` with `SOCK_NONBLOCK`**: Avoids extra `fcntl` calls
-* **Thread-safe buffer**: Lock-free where possible, otherwise mutex-protected
-* **Connection pooling**: Reuses connections via HTTP keep-alive
-
----
----
-
-## 📚 Learning Journey
-
-This project represents my deep dive into:
-
-* Linux system programming
-* Network programming
-* Concurrent programming in C++
-* Performance optimization
-
----
-
-## 🤝 Contributing
-
-While this is primarily a learning project, I welcome:
-
-* Bug reports
-* Performance improvement suggestions
-* Educational discussions about the implementation
-
----
+* Multi-stage build (removes build tools from runtime)
+* Non-root user execution
+* Minimal runtime dependencies only
+* Proper init system (tini) for signal handling
+* Restricted file permissions
+* Clean package cache removal
 
 ## 📜 License
 
