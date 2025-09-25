@@ -1,6 +1,6 @@
 
-<h1 align="center">⚙️ C++ Webserver from Scratch</h1>
-<p align="center"><em>"just use express bro..."</em></p>
+<h1 align="center">Matrix</h1>
+<p align="center"><em>C++ webserver</em></p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/C++-17-blue?logo=cplusplus" />
@@ -11,8 +11,6 @@
 
 ## NOTE! This is a learning project and should not be used in production!
 
-## What I Built (Learning Project - Not Production Ready!)
-
 * **Event-driven architecture** – Exploring the reactor pattern to see how servers can handle lots of connections efficiently
 * **Non-blocking I/O with epoll** – Learning Linux's event notification system and why it scales better than traditional blocking approaches  
 * **Basic thread pool** – Experimenting with worker threads to understand the balance between parallelism and resource overhead
@@ -20,7 +18,7 @@
 * **Custom buffer management** – Understanding memory patterns in network programming and avoiding unnecessary allocations
 * **Edge-triggered epoll** – Diving into the performance differences between level-triggered and edge-triggered event handling
 
-This was built to understand low-level networking concepts and concurrent I/O patterns. Definitely has rough edges and missing production concerns like TLS and rate limiting which is currently handled by NGINX acting as a reverse proxy.
+This was built to understand low-level networking concepts, concurrent I/O patterns and webserver security and penetration testing. Definitely has rough edges and missing production concerns like TLS and rate limiting which is currently handled by NGINX acting as a reverse proxy.
 ---
 
 
